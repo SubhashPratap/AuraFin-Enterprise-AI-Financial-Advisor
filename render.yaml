@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: aurafin-ai-financial-advisor
+    env: static
+    buildCommand: ""
+    staticPublishPath: ./

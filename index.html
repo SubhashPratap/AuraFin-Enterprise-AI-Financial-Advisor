@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraFin — Enterprise AI Financial Adviser & Robo-Wealth Platform</title>
+  
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- DM Sans Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for High-Performance Canvas Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Corporate Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-vault"></i>
+        </div>
+        <div class="brand-text">
+          <h2>AuraFin AI</h2>
+          <span>Wealth Management</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="risk-goals">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Risk & Goals</span>
+        </button>
+        <button class="nav-item" data-tab="portfolio">
+          <i class="fa-solid fa-pie-chart"></i>
+          <span>Robo-Portfolio</span>
+        </button>
+        <button class="nav-item" data-tab="simulation">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Monte Carlo Lab</span>
+        </button>
+        <button class="nav-item" data-tab="advisor">
+          <i class="fa-solid fa-robot"></i>
+          <span>AI Advisory Copilot</span>
+        </button>
+        <button class="nav-item" data-tab="planner">
+          <i class="fa-solid fa-calculator"></i>
+          <span>50/30/20 & FIRE</span>
+        </button>
+      </nav>
+
+      <div class="api-key-box">
+        <div class="api-status">
+          <span class="status-dot active" id="api-status-dot"></span>
+          <span class="status-text" id="api-status-text">Internal AI Engine</span>
+        </div>
+        <button class="btn-secondary btn-small full-width" id="open-settings-btn">
+          <i class="fa-solid fa-gear"></i> Settings & API
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="disclaimer-badge">
+          <i class="fa-solid fa-shield-cat"></i>
+          <span>Enterprise AI Advisory Platform — Fiduciary Grade Portfolio Intelligence</span>
+        </div>
+        
+        <div class="live-market-badge" id="live-market-badge">
+          <i class="fa-solid fa-chart-line market-pulse-icon"></i>
+          <span class="market-label">FX LIVE:</span> Loading Market Rates...
+        </div>
+        
+        <div class="top-bar-right">
+          <div class="currency-selector-wrap">
+            <label for="currency-select"><i class="fa-solid fa-coins"></i> Currency:</label>
+            <select id="currency-select">
+              <option value="$">$ USD</option>
+              <option value="₹">₹ INR</option>
+              <option value="€">€ EUR</option>
+              <option value="£">£ GBP</option>
+            </select>
+          </div>
+
+          <div class="user-profile">
+            <div class="avatar">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <span id="header-persona-name">Primary Wealth Account</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- TAB 1: EXECUTIVE DASHBOARD -->
+      <section id="tab-dashboard" class="tab-page active">
+        <div class="page-title">
+          <h1>Executive Wealth Dashboard</h1>
+          <p>Holistic financial diagnostics, cashflow tracking, and portfolio health metrics.</p>
+        </div>
+
+        <!-- Persona Preset Quick Switcher -->
+        <div class="persona-presets">
+          <span style="font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; font-weight: 600;">
+            <i class="fa-solid fa-user-group" style="margin-right: 6px;"></i> Load Preset Persona:
+          </span>
+          <button class="preset-btn active" data-preset="young_pro">
+            <i class="fa-solid fa-user-graduate"></i> Early Accumulator
+          </button>
+          <button class="preset-btn" data-preset="mid_career">
+            <i class="fa-solid fa-briefcase"></i> Family Mid-Career
+          </button>
+          <button class="preset-btn" data-preset="pre_retire">
+            <i class="fa-solid fa-umbrella-beach"></i> Pre-Retirement
+          </button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Total Net Worth</span>
+              <div class="stat-icon-badge">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="disp-net-worth">$125,000</div>
+            <div class="stat-sub text-success" id="disp-net-worth-sub">+8.4% YTD Return</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Monthly Surplus</span>
+              <div class="stat-icon-badge success">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </div>
+            </div>
+            <div class="stat-value text-success" id="disp-savings">$2,200</div>
+            <div class="stat-sub" id="disp-savings-pct">31% Savings Rate</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Financial Health Index</span>
+              <div class="stat-icon-badge success">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+            </div>
+            <div class="stat-value text-success" id="disp-health-score">84 / 100</div>
+            <div class="stat-sub" id="disp-health-rating">Rating: Excellent</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Emergency Buffer</span>
+              <div class="stat-icon-badge warning">
+                <i class="fa-solid fa-shield"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="disp-emergency-months">4.8 Mos</div>
+            <div class="stat-sub text-warning" id="disp-emergency-sub">Target: 6.0 Months</div>
+          </div>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Asset Allocation Donut Chart Card -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Portfolio Asset Breakdown</h3>
+              <span class="action-badge buy" id="drift-status-badge">Drift: 2.1% (Aligned)</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="dashboard-alloc-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Cashflow Budget Calculator & Inputs -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Monthly Cashflow Breakdown</h3>
+              <button class="btn-secondary btn-small" id="recalc-dashboard-btn">
+                <i class="fa-solid fa-rotate"></i> Recalculate
+              </button>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="input-income">Net Monthly Income</label>
+                <input type="number" id="input-income" value="7000" />
+              </div>
+              <div class="form-group">
+                <label for="input-needs">Essential Obligations (Needs)</label>
+                <input type="number" id="input-needs" value="3300" />
+              </div>
+              <div class="form-group">
+                <label for="input-wants">Discretionary Spending (Wants)</label>
+                <input type="number" id="input-wants" value="1500" />
+              </div>
+              <div class="form-group">
+                <label for="input-liquid">Liquid Emergency Reserves</label>
+                <input type="number" id="input-liquid" value="16000" />
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 14px; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+                <span>Needs Ratio: <b id="disp-needs-pct">47%</b></span>
+                <span>Wants Ratio: <b id="disp-wants-pct">21%</b></span>
+                <span>Savings Ratio: <b id="disp-savings-rate-pct">31%</b></span>
+              </div>
+              <div class="progress-bar-bg" style="margin-bottom: 0;">
+                <div class="progress-bar-fill" id="cashflow-bar-fill" style="width: 31%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: RISK & GOALS PROFILER -->
+      <section id="tab-risk-goals" class="tab-page">
+        <div class="page-title">
+          <h1>Risk Profiler & Goal Trajectory</h1>
+          <p>Institutional 5-factor investor risk profiling and goal milestone tracking.</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- 5-Step Risk Questionnaire -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Investor Risk Profile Quiz</h3>
+              <span class="action-badge hold" id="risk-score-badge">Score: 68/100 (Growth)</span>
+            </div>
+
+            <div class="quiz-card">
+              <h4>1. Time Horizon before requiring withdrawals</h4>
+              <div class="quiz-options" data-factor="horizon">
+                <button class="quiz-option-btn" data-val="1">&lt; 3 Years</button>
+                <button class="quiz-option-btn" data-val="2">3 - 5 Years</button>
+                <button class="quiz-option-btn" data-val="3">5 - 10 Years</button>
+                <button class="quiz-option-btn selected" data-val="5">10+ Years</button>
+              </div>
+            </div>
+
+            <div class="quiz-card">
+              <h4>2. Reaction to a 20% sudden stock market decline</h4>
+              <div class="quiz-options" data-factor="reaction">
+                <button class="quiz-option-btn" data-val="1">Sell all investments to preserve capital</button>
+                <button class="quiz-option-btn" data-val="2">Sell a portion to reduce risk</button>
+                <button class="quiz-option-btn selected" data-val="4">Hold firm and wait for market recovery</button>
+                <button class="quiz-option-btn" data-val="5">Buy more equities at discounted valuations</button>
+              </div>
+            </div>
+
+            <div class="quiz-card">
+              <h4>3. Investment experience & market knowledge</h4>
+              <div class="quiz-options" data-factor="experience">
+                <button class="quiz-option-btn" data-val="1">Novice (Savings accounts & Deposits)</button>
+                <button class="quiz-option-btn selected" data-val="3">Intermediate (Index funds & ETFs)</button>
+                <button class="quiz-option-btn" data-val="5">Advanced (Options, Multi-Asset, Bonds)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goals List & Goal Creator -->
+          <div>
+            <div class="content-card">
+              <div class="card-header">
+                <h3>Target Financial Milestones</h3>
+                <span class="text-secondary" style="font-size: 12px;" id="goals-count-badge">3 Active Goals</span>
+              </div>
+              <div class="goals-grid" id="goals-container">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+
+            <div class="content-card margin-top">
+              <h3>Create Target Milestone</h3>
+              <form id="goal-form" class="form-grid">
+                <div class="form-group">
+                  <label for="goal-name">Milestone Description</label>
+                  <input type="text" id="goal-name" placeholder="e.g. Property Down Payment" required />
+                </div>
+                <div class="form-group">
+                  <label for="goal-target">Target Amount</label>
+                  <input type="number" id="goal-target" placeholder="50000" required />
+                </div>
+                <div class="form-group">
+                  <label for="goal-current">Current Capital Accumulated</label>
+                  <input type="number" id="goal-current" placeholder="12500" value="0" required />
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn-primary full-width margin-top-auto">
+                    <i class="fa-solid fa-plus"></i> Add Goal
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ROBO-PORTFOLIO & REBALANCER -->
+      <section id="tab-portfolio" class="tab-page">
+        <div class="page-title">
+          <h1>Robo-Portfolio & Rebalancing Engine</h1>
+          <p>Automated asset allocation model, drift detection, and targeted trade orders.</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Target vs Actual Chart -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Target vs Actual Asset Allocation</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="portfolio-compare-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Allocation Slider Inputs -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Current Portfolio Allocation Sliders (%)</h3>
+              <button class="btn-secondary btn-small" id="reset-alloc-btn">
+                <i class="fa-solid fa-undo"></i> Reset to Target
+              </button>
+            </div>
+            
+            <div id="alloc-sliders-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Rebalance Trade Orders Table -->
+        <div class="content-card margin-top">
+          <div class="card-header">
+            <h3>Automated Rebalance Trade Execution Plan</h3>
+            <button class="btn-primary btn-small" id="apply-rebalance-btn">
+              <i class="fa-solid fa-check-double"></i> Execute Rebalance Model
+            </button>
+          </div>
+          <table class="trade-table">
+            <thead>
+              <tr>
+                <th>Asset Class</th>
+                <th>Current Alloc</th>
+                <th>Target Alloc</th>
+                <th>Drift %</th>
+                <th>Action Trade Order</th>
+              </tr>
+            </thead>
+            <tbody id="trade-orders-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 4: MONTE CARLO SIMULATOR -->
+      <section id="tab-simulation" class="tab-page">
+        <div class="page-title">
+          <h1>What-If Scenario Lab & Monte Carlo Simulator</h1>
+          <p>1,000-path stochastic wealth projection engine with confidence intervals (P10, P50, P90).</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Simulation Parameters Panel -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Simulation Controls</h3>
+              <button class="btn-primary btn-small" id="run-sim-btn">
+                <i class="fa-solid fa-play"></i> Run 1,000 Paths
+              </button>
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Initial Capital Base</span>
+                <span id="val-sim-initial">$50,000</span>
+              </div>
+              <input type="range" id="sim-initial" min="0" max="500000" step="5000" value="50000" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Monthly Investment</span>
+                <span id="val-sim-monthly">$1,500</span>
+              </div>
+              <input type="range" id="sim-monthly" min="100" max="10000" step="100" value="1500" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Investment Horizon (Years)</span>
+                <span id="val-sim-years">20 Years</span>
+              </div>
+              <input type="range" id="sim-years" min="5" max="40" step="1" value="20" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Expected Nominal Return</span>
+                <span id="val-sim-return">8.5%</span>
+              </div>
+              <input type="range" id="sim-return" min="2" max="15" step="0.5" value="8.5" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Portfolio Volatility (Std Dev)</span>
+                <span id="val-sim-volatility">12.0%</span>
+              </div>
+              <input type="range" id="sim-volatility" min="2" max="25" step="0.5" value="12.0" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Expected Inflation Rate</span>
+                <span id="val-sim-inflation">2.5%</span>
+              </div>
+              <input type="range" id="sim-inflation" min="0" max="8" step="0.5" value="2.5" />
+            </div>
+          </div>
+
+          <!-- Monte Carlo Line Chart -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Stochastic Wealth Distribution</h3>
+            </div>
+            <div class="chart-container" style="height: 320px;">
+              <canvas id="monte-carlo-chart"></canvas>
+            </div>
+
+            <div class="three-col-grid margin-top" style="margin-bottom: 0;">
+              <div class="stat-card" style="padding: 12px;">
+                <div class="stat-header">Pessimistic (P10)</div>
+                <div class="stat-value text-danger" style="font-size: 18px;" id="sim-p10-val">$420,000</div>
+              </div>
+              <div class="stat-card" style="padding: 12px;">
+                <div class="stat-header">Median (P50)</div>
+                <div class="stat-value text-success" style="font-size: 18px;" id="sim-p50-val">$780,000</div>
+              </div>
+              <div class="stat-card" style="padding: 12px;">
+                <div class="stat-header">Optimistic (P90)</div>
+                <div class="stat-value text-info" style="font-size: 18px;" id="sim-p90-val">$1,350,000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: AI ADVISORY COPILOT -->
+      <section id="tab-advisor" class="tab-page">
+        <div class="page-title" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h1>AI Wealth Advisory Copilot</h1>
+            <p>Direct institutional advisory chat with context-aware portfolio intelligence.</p>
+          </div>
+          <button class="btn-secondary" id="export-report-btn">
+            <i class="fa-solid fa-file-pdf"></i> Export Advisory Report
+          </button>
+        </div>
+
+        <div class="chat-wrapper">
+          <div class="chat-messages" id="chat-messages">
+            <div class="msg bot">
+              <div class="msg-avatar">
+                <i class="fa-solid fa-robot"></i>
+              </div>
+              <div class="msg-bubble">
+                Greetings! I am AuraFin AI Senior Wealth Advisor. I have ingested your full financial profile, portfolio allocations, health metrics, and goal timelines. How may I optimize your financial strategy today?
+                <div class="msg-time">Just now</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggestion-chips">
+            <button class="chip" onclick="askQuickQuestion('Give me a full Financial Health Audit')">📊 Financial Health Audit</button>
+            <button class="chip" onclick="askQuickQuestion('How should I rebalance my portfolio?')">⚖️ Rebalance Strategy</button>
+            <button class="chip" onclick="askQuickQuestion('Explain my FIRE timeline & retirement plan')">🚀 FIRE & Retirement Brief</button>
+            <button class="chip" onclick="askQuickQuestion('What happens if the stock market crashes 20%?')">📉 Bear Market Stress Test</button>
+            <button class="chip" onclick="askQuickQuestion('How can I optimize tax loss harvesting?')">🏛️ Tax Optimization</button>
+          </div>
+
+          <form id="chat-form" class="chat-input-bar">
+            <input type="text" id="chat-input" placeholder="Ask AuraFin AI about tax optimization, rebalancing, FIRE goals..." autocomplete="off" required />
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Consult AI</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 6: 50/30/20 & FIRE PLANNER -->
+      <section id="tab-planner" class="tab-page">
+        <div class="page-title">
+          <h1>50/30/20 Capital Framework & FIRE Planner</h1>
+          <p>Standard allocation benchmarks and Financial Independence Retire Early roadmap.</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- 50/30/20 Card -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>50/30/20 Standard Allocation Breakdown</h3>
+            </div>
+            <div class="rule-explanation" style="grid-template-columns: 1fr;">
+              <div class="rule-box" style="text-align: left; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="color: var(--accent-blue);">50% — Fixed Essential Obligations (Needs)</h4>
+                  <p style="margin-bottom: 0;">Housing, Utilities, Debt minimums, Groceries</p>
+                </div>
+                <div class="rule-amount" id="rule-needs-val">$3,500</div>
+              </div>
+
+              <div class="rule-box" style="text-align: left; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="color: var(--accent-indigo);">30% — Discretionary Personal Capital (Wants)</h4>
+                  <p style="margin-bottom: 0;">Dining, Subscriptions, Vacations, Hobbies</p>
+                </div>
+                <div class="rule-amount" id="rule-wants-val">$2,100</div>
+              </div>
+
+              <div class="rule-box" style="text-align: left; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="color: var(--accent-emerald);">20% — Wealth Accumulation & Debt Clearance</h4>
+                  <p style="margin-bottom: 0;">Index Investments, Emergency Fund, Principal Repayment</p>
+                </div>
+                <div class="rule-amount" id="rule-savings-val">$1,400</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FIRE Target Card -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>FIRE Independence Progress</h3>
+              <span class="action-badge buy" id="fire-badge">4% Rule Target</span>
+            </div>
+            <div style="text-align: center; padding: 20px 0;">
+              <div style="font-size: 42px; font-weight: 800; color: var(--accent-gold);" id="fire-years-disp">14.2 Years</div>
+              <div style="color: var(--text-secondary); font-size: 14px;">Projected Time to Financial Independence</div>
+            </div>
+
+            <div class="progress-bar-bg" style="height: 12px;">
+              <div class="progress-bar-fill" id="fire-progress-fill" style="width: 25%;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 12px;">
+              <span>Current Wealth: <b id="fire-curr-wealth">$125,000</b></span>
+              <span>Target (25x Exp): <b id="fire-target-num">$1,440,000</b></span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Settings & API Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Institutional Advisory Configuration</h3>
+        <button class="modal-close" id="close-settings-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 16px;">Configure Google Gemini API key to activate real-time Generative AI advisory. If unconfigured, internal fiduciary AI logic handles queries locally.</p>
+        
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="gemini-api-key">Gemini API Key</label>
+          <input type="password" id="gemini-api-key" placeholder="AIzaSy..." />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="gemini-model-select">AI Model Selection</label>
+          <select id="gemini-model-select">
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Ultra Fast)</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Strategy)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="reset-data-btn" style="margin-right: auto; color: var(--accent-danger);">
+          <i class="fa-solid fa-trash"></i> Reset Data
+        </button>
+        <button class="btn-secondary" id="cancel-settings-btn">Cancel</button>
+        <button class="btn-primary" id="save-settings-btn">Save Configurations</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Script Dependencies -->
+  <script src="financial-engine.js"></script>
+  <script src="ai-advisor.js"></script>
+  <script src="api-market.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
